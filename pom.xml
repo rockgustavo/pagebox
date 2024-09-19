@@ -47,6 +47,11 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<!-- Starter Validation -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 		<!-- Ambiente de desenvolvimento para reiniciar automaticamente -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
