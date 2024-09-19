@@ -1,8 +1,8 @@
 package com.pagebox.pagebox.rest.dto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+import com.pagebox.pagebox.model.entity.Directory;
 import com.pagebox.pagebox.model.entity.File;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DirectoryDTO {
     private String name;
+    private Directory parentDirectory;
     private List<File> files;
-    private LocalDateTime createdAt;
+
 }
