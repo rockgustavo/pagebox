@@ -59,6 +59,12 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+		<!-- Banco em memória H2-->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 		<!-- MySql-->
 		<dependency>
 			<groupId>mysql</groupId>

@@ -1,28 +1,31 @@
 spring:
   application:
-    name: "Ambiente de testes"
-
-  web:
-    locale-resolver: fixed
-    locale: pt_BR
+    name: "Ambiente de testes - Banco em Memória H2"
 
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/pagebox?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo
-    username: root
-    password: root
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: user
+    password: ""
+    initialization-mode: always
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
         format_sql: true
-    hibernate:
-      ddl-auto: update
+    defer-datasource-initialization: true
 
 server:
-  port: 8081
+  port: 8080
 
 application:
-  hello: "Ambiente de testes"
+  hello: "Ambiente de testes - Banco em Memória H2"
