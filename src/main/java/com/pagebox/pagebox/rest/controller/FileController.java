@@ -18,6 +18,7 @@ import com.pagebox.pagebox.rest.dto.FileDTO;
 import com.pagebox.pagebox.service.FileService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -29,13 +30,13 @@ public class FileController {
 
     @Operation(summary = "Criação de um arquivo associado a um diretório")
     @PostMapping
-    public ResponseEntity<FileDTO> createFile(@RequestBody FileDTO fileDTO) {
+    public ResponseEntity<FileDTO> createFile(@Valid @RequestBody FileDTO fileDTO) {
         return ResponseEntity.ok(fileService.createFile(fileDTO));
     }
 
     @Operation(summary = "Atualizar o arquivo, incluindo mudança de diretório, nome e conteúdo")
     @PutMapping("/{id}")
-    public ResponseEntity<FileDTO> updateFile(@PathVariable Long id, @RequestBody FileDTO fileDTO) {
+    public ResponseEntity<FileDTO> updateFile(@Valid @PathVariable Long id, @RequestBody FileDTO fileDTO) {
         return ResponseEntity.ok(fileService.updateFile(id, fileDTO));
     }
 

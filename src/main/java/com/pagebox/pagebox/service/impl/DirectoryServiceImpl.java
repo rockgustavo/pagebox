@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.pagebox.pagebox.exception.DirectoryNotFoundException;
 import com.pagebox.pagebox.model.entity.Directory;
 import com.pagebox.pagebox.model.repository.DirectoryRepository;
 import com.pagebox.pagebox.rest.dto.DirectoryDTO;
@@ -21,7 +22,6 @@ public class DirectoryServiceImpl implements DirectoryService {
     private final DirectoryRepository directoryRepository;
     private final ModelMapper modelMapper;
 
-    // Criação de um diretório
     public DirectoryDTO createDirectory(DirectoryDTO directoryDTO) {
         Directory directory = new Directory();
         directory.setName(directoryDTO.getName());
@@ -31,17 +31,19 @@ public class DirectoryServiceImpl implements DirectoryService {
         if (directoryDTO.getParentDirectory() != null) {
             Optional<Directory> parentDirectory = directoryRepository
                     .findById(directoryDTO.getParentDirectory().getId());
-            parentDirectory.ifPresent(directory::setParentDirectory);
+            if (parentDirectory.isEmpty()) {
+                throw new DirectoryNotFoundException("Diretório pai não encontrado");
+            }
+            directory.setParentDirectory(parentDirectory.get());
         }
 
         Directory savedDirectory = directoryRepository.save(directory);
         return modelMapper.map(savedDirectory, DirectoryDTO.class);
     }
 
-    // Atualização do diretório
     public DirectoryDTO updateDirectory(Long id, DirectoryDTO directoryDTO) {
         Directory directory = directoryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Diretório não encontrado"));
+                .orElseThrow(() -> new DirectoryNotFoundException("Diretório não encontrado"));
 
         directory.setName(directoryDTO.getName());
 
@@ -49,7 +51,10 @@ public class DirectoryServiceImpl implements DirectoryService {
         if (directoryDTO.getParentDirectory() != null) {
             Optional<Directory> parentDirectory = directoryRepository
                     .findById(directoryDTO.getParentDirectory().getId());
-            parentDirectory.ifPresent(directory::setParentDirectory);
+            if (parentDirectory.isEmpty()) {
+                throw new DirectoryNotFoundException("Diretório pai não encontrado");
+            }
+            directory.setParentDirectory(parentDirectory.get());
         } else {
             // Remove o parent se for nulo
             directory.setParentDirectory(null);

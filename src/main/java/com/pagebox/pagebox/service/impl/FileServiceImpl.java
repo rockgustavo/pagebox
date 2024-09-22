@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.pagebox.pagebox.exception.DirectoryNotFoundException;
+import com.pagebox.pagebox.exception.FileNotFoundException;
 import com.pagebox.pagebox.model.entity.Directory;
 import com.pagebox.pagebox.model.entity.File;
 import com.pagebox.pagebox.model.repository.DirectoryRepository;
@@ -21,71 +23,73 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
-    private final FileRepository fileRepository;
-    private final DirectoryRepository directoryRepository;
-    private final ModelMapper modelMapper;
+        private final FileRepository fileRepository;
+        private final DirectoryRepository directoryRepository;
+        private final ModelMapper modelMapper;
 
-    // Criação de um arquivo
-    @Override
-    public FileDTO createFile(FileDTO fileDTO) {
-        Directory directory = fileDTO.getDirectory() != null
-                ? directoryRepository.findById(fileDTO.getDirectory().getId())
-                        .orElseThrow(() -> new IllegalArgumentException("Diretório não encontrado"))
-                : null;
+        @Override
+        public FileDTO createFile(FileDTO fileDTO) {
+                if (fileDTO.getDirectory() == null || fileDTO.getDirectory().getId() == null) {
+                        throw new IllegalArgumentException("Um diretório deve ser fornecido");
+                }
 
-        File file = new File();
-        file.setName(fileDTO.getName());
-        file.setContent(fileDTO.getContent());
-        file.setDirectory(directory);
-        file.setCreatedAt(LocalDateTime.now());
+                Directory directory = directoryRepository.findById(fileDTO.getDirectory().getId())
+                                .orElseThrow(() -> new DirectoryNotFoundException("Diretório não encontrado"));
 
-        File savedFile = fileRepository.save(file);
-        return modelMapper.map(savedFile, FileDTO.class);
-    }
+                File file = new File();
+                file.setName(fileDTO.getName());
+                file.setContent(fileDTO.getContent());
+                file.setDirectory(directory);
+                file.setCreatedAt(LocalDateTime.now());
 
-    // Atualização de um arquivo
-    @Override
-    public FileDTO updateFile(Long id, FileDTO fileDTO) {
-        File file = fileRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Arquivo não encontrado"));
+                File savedFile = fileRepository.save(file);
+                return modelMapper.map(savedFile, FileDTO.class);
+        }
 
-        Directory directory = fileDTO.getDirectory() != null
-                ? directoryRepository.findById(fileDTO.getDirectory().getId())
-                        .orElseThrow(() -> new IllegalArgumentException("Diretório não encontrado"))
-                : null;
+        @Override
+        public FileDTO updateFile(Long id, FileDTO fileDTO) {
+                File file = fileRepository.findById(id)
+                                .orElseThrow(() -> new FileNotFoundException("Arquivo não encontrado"));
 
-        file.setName(fileDTO.getName());
-        file.setContent(fileDTO.getContent());
-        file.setDirectory(directory);
+                if (fileDTO.getDirectory() != null && fileDTO.getDirectory().getId() != null) {
+                        Directory directory = directoryRepository.findById(fileDTO.getDirectory().getId())
+                                        .orElseThrow(() -> new DirectoryNotFoundException("Diretório não encontrado"));
+                        file.setDirectory(directory);
+                } else {
+                        file.setDirectory(null); // Remove o diretório se não for fornecido
+                }
 
-        File updatedFile = fileRepository.save(file);
-        return modelMapper.map(updatedFile, FileDTO.class);
-    }
+                file.setName(fileDTO.getName());
+                file.setContent(fileDTO.getContent());
 
-    // Exclusão de um arquivo
-    @Override
-    public void deleteFile(Long id) {
-        fileRepository.deleteById(id);
-    }
+                File updatedFile = fileRepository.save(file);
+                return modelMapper.map(updatedFile, FileDTO.class);
+        }
 
-    // Busca de um arquivo por ID
-    @Override
-    public Optional<FileDTO> getFileById(Long id) {
-        return fileRepository.findById(id)
-                .map(file -> modelMapper.map(file, FileDTO.class));
-    }
+        // Exclusão de um arquivo
+        @Override
+        public void deleteFile(Long id) {
+                fileRepository.deleteById(id);
+        }
 
-    // Busca de um arquivo por nome
-    @Override
-    public Optional<FileDTO> getFileByName(String name) {
-        return fileRepository.findByName(name)
-                .map(file -> modelMapper.map(file, FileDTO.class));
-    }
+        // Busca de um arquivo por ID
+        @Override
+        public Optional<FileDTO> getFileById(Long id) {
+                return fileRepository.findById(id)
+                                .map(file -> modelMapper.map(file, FileDTO.class));
+        }
 
-    // Listagem paginada de arquivos
-    @Override
-    public Page<FileDTO> getAllFiles(Pageable pageable) {
-        return fileRepository.findAll(pageable)
-                .map(file -> modelMapper.map(file, FileDTO.class));
-    }
+        // Busca de um arquivo por nome
+        @Override
+        public Optional<FileDTO> getFileByName(String name) {
+                return fileRepository.findByName(name)
+                                .map(file -> modelMapper.map(file, FileDTO.class));
+        }
+
+        // Listagem paginada de arquivos
+        @Override
+        public Page<FileDTO> getAllFiles(Pageable pageable) {
+                return fileRepository.findAll(pageable)
+                                .map(file -> modelMapper.map(file, FileDTO.class));
+        }
 }

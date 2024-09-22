@@ -18,6 +18,7 @@ import com.pagebox.pagebox.service.DirectoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -32,13 +33,14 @@ public class DirectoryController {
             @ApiResponse(responseCode = "400", description = "Requisição inválida")
     })
     @PostMapping
-    public ResponseEntity<DirectoryDTO> createDirectory(@RequestBody DirectoryDTO directoryDTO) {
+    public ResponseEntity<DirectoryDTO> createDirectory(@Valid @RequestBody DirectoryDTO directoryDTO) {
         return ResponseEntity.ok(directoryService.createDirectory(directoryDTO));
     }
 
     @Operation(summary = "Alterar o nome do diretório ou o diretório pai")
     @PutMapping("/{id}")
-    public ResponseEntity<DirectoryDTO> updateDirectory(@PathVariable Long id, @RequestBody DirectoryDTO directoryDTO) {
+    public ResponseEntity<DirectoryDTO> updateDirectory(@Valid @PathVariable Long id,
+            @RequestBody DirectoryDTO directoryDTO) {
         return ResponseEntity.ok(directoryService.updateDirectory(id, directoryDTO));
     }
 
