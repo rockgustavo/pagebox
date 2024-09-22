@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pagebox.pagebox.rest.dto.FileDTO;
 import com.pagebox.pagebox.service.FileService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -26,26 +27,26 @@ public class FileController {
 
     private final FileService fileService;
 
-    // Create: Criação de um arquivo associado a um diretório
+    @Operation(summary = "Criação de um arquivo associado a um diretório")
     @PostMapping
     public ResponseEntity<FileDTO> createFile(@RequestBody FileDTO fileDTO) {
         return ResponseEntity.ok(fileService.createFile(fileDTO));
     }
 
-    // Update: Atualizar o arquivo, incluindo mudança de diretório, nome e conteúdo
+    @Operation(summary = "Atualizar o arquivo, incluindo mudança de diretório, nome e conteúdo")
     @PutMapping("/{id}")
     public ResponseEntity<FileDTO> updateFile(@PathVariable Long id, @RequestBody FileDTO fileDTO) {
         return ResponseEntity.ok(fileService.updateFile(id, fileDTO));
     }
 
-    // Delete: Excluir um arquivo
+    @Operation(summary = "Excluir um arquivo")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFile(@PathVariable Long id) {
         fileService.deleteFile(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Read 1: Buscar um arquivo por ID
+    @Operation(summary = "Buscar um arquivo por ID")
     @GetMapping("/{id}")
     public ResponseEntity<FileDTO> getFileById(@PathVariable Long id) {
         return fileService.getFileById(id)
@@ -53,6 +54,7 @@ public class FileController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Buscar um arquivo por nome")
     @GetMapping("/nome")
     public ResponseEntity<FileDTO> getFileByName(@RequestBody FileDTO fileDTO) {
         return fileService.getFileByName(fileDTO.getName())
@@ -60,7 +62,7 @@ public class FileController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Read 2: Buscar lista de arquivos com paginação
+    @Operation(summary = "Buscar lista de arquivos com paginação")
     @GetMapping
     public ResponseEntity<List<FileDTO>> getAllFiles(Pageable pageable) {
         Page<FileDTO> filesPage = fileService.getAllFiles(pageable);

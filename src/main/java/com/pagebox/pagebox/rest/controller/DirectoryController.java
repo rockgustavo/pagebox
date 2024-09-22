@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pagebox.pagebox.rest.dto.DirectoryDTO;
 import com.pagebox.pagebox.service.DirectoryService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -23,26 +26,30 @@ import lombok.RequiredArgsConstructor;
 public class DirectoryController {
     private final DirectoryService directoryService;
 
-    // Create: Criação de um novo diretório com ou sem diretório pai
+    @Operation(summary = "Criação de um novo diretório (com ou sem diretório pai)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Diretório criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida")
+    })
     @PostMapping
     public ResponseEntity<DirectoryDTO> createDirectory(@RequestBody DirectoryDTO directoryDTO) {
         return ResponseEntity.ok(directoryService.createDirectory(directoryDTO));
     }
 
-    // Update: Alterar o nome do diretório ou o diretório pai
+    @Operation(summary = "Alterar o nome do diretório ou o diretório pai")
     @PutMapping("/{id}")
     public ResponseEntity<DirectoryDTO> updateDirectory(@PathVariable Long id, @RequestBody DirectoryDTO directoryDTO) {
         return ResponseEntity.ok(directoryService.updateDirectory(id, directoryDTO));
     }
 
-    // Delete: Excluir um diretório
+    @Operation(summary = "Excluir um diretório")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDirectory(@PathVariable Long id) {
         directoryService.deleteDirectory(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Read: Obter lista de diretórios ordenados pela hierarquia
+    @Operation(summary = "Obter lista de diretórios ordenados pela hierarquia")
     @GetMapping
     public ResponseEntity<List<DirectoryDTO>> getAllDirectories() {
         List<DirectoryDTO> directories = directoryService.getAllDirectories();
