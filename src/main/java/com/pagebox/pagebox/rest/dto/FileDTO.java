@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FileDTO {
-
+    private Long id;
     @NotBlank(message = "Nome do arquivo não pode ser em branco")
     private String name;
     @NotBlank(message = "Conteúdo não pode ser em branco")

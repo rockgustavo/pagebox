@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DirectoryDTO {
+    private Long id;
     @NotBlank(message = "Nome do diretório não pode ser em branco")
     private String name;
     private Directory parentDirectory;
