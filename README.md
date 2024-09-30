@@ -97,6 +97,64 @@ docker rm frontend backend mysql
 docker volume rm mysql_data
 ```
 
+## Se um container não subir pode estar ocorrendo um conflito de porta:
+
+#### Para evitar conflitos de portas nas aplicações:
+
+**Confira se a porta 8080** está sendo utilizada em sua máquina:
+No Windows, você pode usar:
+
+```
+netstat -ano | findstr :8080
+```
+
+Em sistemas baseados em Linux ou Mac, use o comando:
+
+```
+sudo lsof -i :8080
+```
+
+**Você pode encerrar o processo que está utilizando a porta**, copiando o PID(númeração lado direito)
+
+No Windows, você pode usar:
+
+```
+taskkill /PID numeroPID /F
+```
+
+Em sistemas baseados em Linux ou Mac, use o comando:
+
+```
+sudo kill -9 numeroPID
+```
+
+**Confira se a porta 3306** está sendo utilizada em sua máquina:
+No Windows, você pode usar:
+
+```
+netstat -ano | findstr :3306
+```
+
+Em sistemas baseados em Linux ou Mac, use o comando:
+
+```
+sudo lsof -i :3306
+```
+
+**Você pode encerrar o processo que está utilizando a porta**, copiando o PID(númeração lado direito)
+
+No Windows, você pode usar:
+
+```
+taskkill /PID numeroPID /F
+```
+
+Em sistemas baseados em Linux ou Mac, use o comando:
+
+```
+sudo kill -9 numeroPID
+```
+
 ## Front-End - Consumo da API:
 
 ```
